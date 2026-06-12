@@ -1,1 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Jelly Labs — AI-Native Animation Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black:    #0D0D0D;
+    --card:     #161616;
+    --border:   #2A2A2A;
+    --blue:     #3EEFFF;
+    --blue-dim: #1A9BAA;
+    --white:    #F0EDE8;
+    --mid:      #8A8480;
+    --dim:      #3A3A3A;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .display { font-family: 'Syne', sans-serif; font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; }
+  .label { font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
+  section { padding: 6rem 0; }
+  section + section { border-top: 1px solid var(--border); }
+  #hero { padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 70% 40%, rgba(62,239,255,0.06) 0%, transparent 70%), radial-gradient(ellipse 40% 60% at 20% 80%, rgba(62,239,255,0.03) 0%, transparent 60%); pointer-events: none; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(62,239,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(62,239,255,0.04) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%); pointer-events: none; }
+  .hero-content { position: relative; z-index: 2; padding: 0 2rem 5rem; max-width: 1080px; margin: 0 auto; width: 100%; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; }
+  .hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--blue); }
+  .hero-studio { font-family: 'Syne', sans-serif; font-weight: 800; line-height: 0.88; letter-spacing: -0.04em; margin-bottom: 1.5rem; }
+  .hero-studio .line-brain { font-size: clamp(6rem, 18vw, 18rem); color: var(--white); display: block; }
+  .hero-studio .line-jelly { font-size: clamp(6rem, 18vw, 18rem); color: var(--white); display: block; }
+  .hero-studio .line-jelly-wrap { display: flex; align-items: flex-end; gap: 0.6rem; line-height: 1; }
+  .hero-studio .labs-tag { font-size: clamp(2.4rem, 5.4vw, 6rem); font-weight: 700; color: var(--blue); letter-spacing: 0.05em; padding-bottom: 0.5rem; text-transform: uppercase; }
+  .hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--mid); max-width: 560px; font-weight: 300; line-height: 1.7; margin-bottom: 3rem; }
+  .hero-scroll { display: flex; align-items: center; gap: 1rem; color: var(--mid); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'Syne', sans-serif; }
+  .hero-scroll::after { content: ''; display: block; width: 4rem; height: 1px; background: var(--dim); }
+  #about .container { display: grid; grid-template-columns: 1fr 1.6fr; gap: 5rem; align-items: start; }
+  .about-left h2 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; margin-top: 1rem; }
+  .about-left h2 em { color: var(--blue); font-style: normal; }
+  .about-right p { color: var(--mid); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem; }
+  .about-right p strong { color: var(--white); font-weight: 500; }
+  .credits-strip { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2.5rem; }
+  .credit-tag { font-size: 0.7rem; font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--border); padding: 0.3rem 0.75rem; color: var(--mid); }
+  .section-head { margin-bottom: 3.5rem; }
+  .section-head h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; margin-top: 0.75rem; }
+  .comp-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(62,239,255,0.08); border: 1px solid rgba(62,239,255,0.25); padding: 0.3rem 0.75rem; font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin-bottom: 1rem; }
+  .comp-badge::before { content: '◆'; font-size: 0.5rem; }
+  .ip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .ip-card { background: var(--card); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  .ip-image { width: 100%; aspect-ratio: 16/9; background: var(--dim); position: relative; overflow: hidden; flex-shrink: 0; }
+  .ip-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+  .ip-card:hover .ip-image img { transform: scale(1.04); }
+  .ip-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; color: var(--dim); font-family: 'Syne', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; border: 2px dashed var(--border); background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(62,239,255,0.02) 10px, rgba(62,239,255,0.02) 20px); }
+  .ip-image-placeholder svg { width: 2rem; height: 2rem; opacity: 0.3; }
+  .ip-body { padding: 2rem 2rem 2.5rem; flex: 1; display: flex; flex-direction: column; }
+  .ip-name { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin: 0.5rem 0 0.5rem; }
+  .ip-tagline { font-size: 0.9rem; color: var(--mid); line-height: 1.7; margin-bottom: 1.5rem; flex: 1; }
+  .pipeline { border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: auto; }
+  .pipeline-label { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue-dim); margin-bottom: 0.75rem; }
+  .pipeline-steps { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+  .step-tool { background: var(--dim); color: var(--white); padding: 0.2rem 0.5rem; font-size: 0.68rem; font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
+  .step-arrow { color: var(--border); font-size: 0.7rem; }
+  .ip-card-wide { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; background: var(--card); gap: 2px; }
+  .ip-card-wide .ip-image { aspect-ratio: unset; height: 100%; min-height: 260px; }
+  .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .video-cell { background: var(--card); overflow: hidden; }
+  .video-frame { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; }
+  .video-frame iframe { width: 100%; height: 100%; border: 0; }
+  .video-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.75rem; color: var(--mid); font-family: 'Syne', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--dim); }
+  .play-btn { width: 3rem; height: 3rem; border: 2px solid var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .play-btn svg { fill: var(--blue); }
+  .video-caption { padding: 1.25rem 1.5rem; }
+  .video-caption .label { margin-bottom: 0.3rem; }
+  .video-caption p { font-size: 0.82rem; color: var(--mid); }
+  .stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .stack-cell { background: var(--card); padding: 2rem; position: relative; }
+  .stack-cell::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: var(--blue); transition: height 0.4s ease; }
+  .stack-cell:hover::before { height: 100%; }
+  .stack-category { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue); margin-bottom: 1rem; }
+  .stack-tools { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .stack-tools li { font-size: 0.88rem; color: var(--white); padding-left: 0.75rem; position: relative; }
+  .stack-tools li::before { content: '·'; position: absolute; left: 0; color: var(--blue-dim); }
+  .approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .approach-block { background: var(--card); padding: 2.5rem; }
+  .approach-num { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 1rem; }
+  .approach-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .approach-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.75; }
+  #contact { text-align: center; }
+  #contact h2 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 800; line-height: 1; margin: 1rem 0 1.5rem; }
+  #contact h2 em { color: var(--blue); font-style: normal; }
+  #contact p { color: var(--mid); max-width: 420px; margin: 0 auto 2.5rem; font-size: 1rem; line-height: 1.7; }
+  .cta-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .cta-primary { background: var(--blue); color: #0D0D0D; padding: 0.9rem 2rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.2s; }
+  .cta-primary:hover { background: #7df7ff; transform: translateY(-2px); }
+  .cta-secondary { border: 1px solid var(--border); color: var(--white); padding: 0.9rem 2rem; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: inline-block; transition: border-color 0.2s, color 0.2s; }
+  .cta-secondary:hover { border-color: var(--blue); color: var(--blue); }
+  footer { border-top: 1px solid var(--border); padding: 2rem; display: flex; justify-content: space-between; align-items: center; max-width: 1080px; margin: 0 auto; font-size: 0.75rem; color: var(--mid); font-family: 'Syne', sans-serif; letter-spacing: 0.05em; }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  @media (max-width: 768px) {
+    #about .container { grid-template-columns: 1fr; gap: 2.5rem; }
+    .ip-grid { grid-template-columns: 1fr; }
+    .ip-card-wide { grid-column: span 1; grid-template-columns: 1fr; }
+    .stack-grid { grid-template-columns: 1fr 1fr; }
+    .approach-grid { grid-template-columns: 1fr; }
+    .video-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .hero-studio .line-brain, .hero-studio .line-jelly { font-size: clamp(4rem, 16vw, 8rem); }
+  }
+  @media (max-width: 480px) { .stack-grid { grid-template-columns: 1fr; } section { padding: 4rem 0; } }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .ip-card:hover .ip-image img { transform: none; } .stack-cell::before { transition: none; } }
+</style>
+</head>
+<body>
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="label">AI-Native Animation Studio</span>
+    </div>
+    <div class="hero-studio">
+      <span class="line-brain">Brain</span>
+      <div class="line-jelly-wrap">
+        <span class="line-jelly">Jelly</span>
+        <span class="labs-tag">Labs</span>
+      </div>
+    </div>
+    <p class="hero-sub">Original content and IP built on end-to-end generative pipelines — from story and visual development to platform-ready short films and animated shorts.</p>
+    <div class="hero-scroll">Scroll to explore</div>
+  </div>
+</section>
 
+<section id="about">
+  <div class="container">
+    <div class="about-left reveal">
+      <span class="label">The Studio</span>
+      <h2>Where <em>craft</em> meets the generative stack.</h2>
+    </div>
+    <div class="about-right reveal">
+      <p>Brain Jelly Labs is the working studio of <strong>Youa Vang</strong> — visual development artist, creative director, and published author-illustrator with 15+ years across feature animation and television. Credits span <strong>Disney Feature Animation, DreamWorks, Warner Bros., Marvel, Hasbro,</strong> and <strong>Nickelodeon</strong>.</p>
+      <p>The studio develops <strong>original content and IP</strong> — short films, animated shorts, and original series — using GenAI-native production pipelines. Every project begins with story and traditional visual development: defining the scenes, the beats, the world. From there the pipeline scales through storyboards, image generation, image-to-video, lip-sync, voice, and editorial — all built for sprint-based, platform-ready delivery.</p>
+      <p>The goal is not to replace craft. It's to build a production system where a single artist can develop, produce, and ship original IP at a pace that was previously impossible.</p>
+      <div class="credits-strip">
+        <span class="credit-tag">Disney</span>
+        <span class="credit-tag">DreamWorks</span>
+        <span class="credit-tag">Warner Bros.</span>
+        <span class="credit-tag">Marvel</span>
+        <span class="credit-tag">Hasbro</span>
+        <span class="credit-tag">Nickelodeon</span>
+        <span class="credit-tag">ArtCenter Faculty</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="label">Competition Work</span>
+      <h2>Three Films. Three Worlds. Under Pressure.</h2>
+      <p style="margin-top:1rem;color:var(--mid);max-width:600px;font-size:0.95rem;line-height:1.75;">Each piece was built for a competition under a hard deadline — four days or 48 hours. Each one lives in a completely different visual world with a different pipeline. This is what sprint-based production looks like when craft and generative tools work together.</p>
+    </div>
+    <div class="ip-grid">
+
+      <div class="ip-card reveal">
+        <div class="ip-image">
+          <div class="ip-image-placeholder">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Drop Open still here
+          </div>
+        </div>
+        <div class="ip-body">
+          <div class="comp-badge">Gen Jam · Machine Cinema × OpenArt · 4 Days</div>
+          <h3 class="ip-name">Open</h3>
+          <p class="ip-tagline">A complete short film — realism, stylized 2D, and mixed aesthetic woven into a single emotional arc. Built in four days for the Gen Jam competition hosted by Machine Cinema and OpenArt (theme: Open/Close). Festival-ready from brief to final cut without sacrificing visual coherence or story.</p>
+          <div class="pipeline">
+            <div class="pipeline-label">Production Pipeline</div>
+            <div class="pipeline-steps">
+              <span class="step-tool">Script</span><span class="step-arrow">→</span>
+              <span class="step-tool">Storyboard</span><span class="step-arrow">→</span>
+              <span class="step-tool">Midjourney</span><span class="step-arrow">→</span>
+              <span class="step-tool">Runway</span><span class="step-arrow">→</span>
+              <span class="step-tool">ElevenLabs</span><span class="step-arrow">→</span>
+              <span class="step-tool">Suno</span><span class="step-arrow">→</span>
+              <span class="step-tool">Premiere Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ip-card reveal">
+        <div class="ip-image">
+          <div class="ip-image-placeholder">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Drop AI on the Lot still here
+          </div>
+        </div>
+        <div class="ip-body">
+          <div class="comp-badge">AI on the Lot Opening Competition · 4 Days</div>
+          <h3 class="ip-name">AI on the Lot</h3>
+          <p class="ip-tagline">Cartoony CG aesthetic — a distinct visual world built entirely within a four-day competition window for the AI on the Lot opening competition. Demonstrates pipeline fluency in a completely different register from Open: bright, stylized, motion-forward.</p>
+          <div class="pipeline">
+            <div class="pipeline-label">Production Pipeline</div>
+            <div class="pipeline-steps">
+              <span class="step-tool">Concept</span><span class="step-arrow">→</span>
+              <span class="step-tool">Storyboard</span><span class="step-arrow">→</span>
+              <span class="step-tool">Midjourney</span><span class="step-arrow">→</span>
+              <span class="step-tool">Kling 3.0</span><span class="step-arrow">→</span>
+              <span class="step-tool">ElevenLabs</span><span class="step-arrow">→</span>
+              <span class="step-tool">Premiere Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ip-card-wide reveal">
+        <div class="ip-image">
+          <div class="ip-image-placeholder">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Drop Build Your Wings still here
+          </div>
+        </div>
+        <div class="ip-body" style="padding:2rem 2.5rem;">
+          <div class="comp-badge">Soulscape 2026 · Top 5 · 48 Hours</div>
+          <h3 class="ip-name">Build Your Wings</h3>
+          <p class="ip-tagline">Dark fantasy — a completely different emotional register from anything else in this collection. Built in 48 hours for Soulscape 2026 and placed in the top five. The constraint was absolute: concept, visuals, motion, audio, and edit in two days. The result is the most visually distinct piece in the studio's competition work — and the one that shows how far the pipeline can reach when pushed.</p>
+          <div class="pipeline">
+            <div class="pipeline-label">Production Pipeline</div>
+            <div class="pipeline-steps">
+              <span class="step-tool">Concept</span><span class="step-arrow">→</span>
+              <span class="step-tool">Storyboard</span><span class="step-arrow">→</span>
+              <span class="step-tool">Midjourney</span><span class="step-arrow">→</span>
+              <span class="step-tool">Kling 3.0</span><span class="step-arrow">→</span>
+              <span class="step-tool">Seedance 2.0</span><span class="step-arrow">→</span>
+              <span class="step-tool">ElevenLabs</span><span class="step-arrow">→</span>
+              <span class="step-tool">Suno</span><span class="step-arrow">→</span>
+              <span class="step-tool">Premiere Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="characters">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="label">Original IP · Characters in Production</span>
+      <h2>Built to Run.</h2>
+      <p style="margin-top:1rem;color:var(--mid);max-width:600px;font-size:0.95rem;line-height:1.75;">Where the competition work proves sprint velocity, these two IPs prove something different — the ability to build original content systems designed to sustain. Locked identities, repeatable pipelines, long-term content architecture.</p>
+    </div>
+    <div class="ip-grid">
+
+      <div class="ip-card reveal">
+        <div class="ip-image">
+          <div class="ip-image-placeholder">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Drop Eddie image here
+          </div>
+        </div>
+        <div class="ip-body">
+          <span class="label">Vertical Series · TikTok-First</span>
+          <h3 class="ip-name">Eddie — Street Jesus</h3>
+          <p class="ip-tagline">A racially ambiguous neighborhood philosopher — the modern Mr. Rogers for the hood. 1–2 minute vertical episodes built around earned wisdom, quiet intervention, and the small dignities of street life. Visual identity locked. Content system built. In production.</p>
+          <div class="pipeline">
+            <div class="pipeline-label">Production Pipeline</div>
+            <div class="pipeline-steps">
+              <span class="step-tool">Vis Dev</span><span class="step-arrow">→</span>
+              <span class="step-tool">Higgsfield Soul</span><span class="step-arrow">→</span>
+              <span class="step-tool">Kling 3.0</span><span class="step-arrow">→</span>
+              <span class="step-tool">HeyGen</span><span class="step-arrow">→</span>
+              <span class="step-tool">ElevenLabs</span><span class="step-arrow">→</span>
+              <span class="step-tool">Premiere Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ip-card reveal">
+        <div class="ip-image">
+          <div class="ip-image-placeholder">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Drop Catfucious image here
+          </div>
+        </div>
+        <div class="ip-body">
+          <span class="label">Teahouse Series · Short-Form Comedy</span>
+          <h3 class="ip-name">Catfucious</h3>
+          <p class="ip-tagline">Confucius reborn as a Maine Coon — ancient Eastern philosophy delivered with a modern twist. Catfucious takes timeless wisdom and holds it up against today's problems: discipline and distraction, patience and doom-scrolling, presence and the endless feed. Old truths. New failures. Deadpan delivery.</p>
+          <div class="pipeline">
+            <div class="pipeline-label">Production Pipeline</div>
+            <div class="pipeline-steps">
+              <span class="step-tool">Vis Dev</span><span class="step-arrow">→</span>
+              <span class="step-tool">Midjourney</span><span class="step-arrow">→</span>
+              <span class="step-tool">Nano Banana Pro</span><span class="step-arrow">→</span>
+              <span class="step-tool">Wan 2.6</span><span class="step-arrow">→</span>
+              <span class="step-tool">HeyGen</span><span class="step-arrow">→</span>
+              <span class="step-tool">Premiere Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section id="video">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="label">In Motion</span>
+      <h2>Watch the Work</h2>
+    </div>
+    <div class="video-grid reveal">
+
+      <div class="video-cell">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-btn"><svg width="14" height="16" viewBox="0 0 14 16"><path d="M0 0l14 8L0 16V0z"/></svg></div>
+            Add Open video link
+          </div>
+        </div>
+        <div class="video-caption">
+          <div class="label">Open · Short Film</div>
+          <p>Gen Jam · Machine Cinema × OpenArt · 4 Days</p>
+        </div>
+      </div>
+
+      <div class="video-cell">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-btn"><svg width="14" height="16" viewBox="0 0 14 16"><path d="M0 0l14 8L0 16V0z"/></svg></div>
+            Add AI on the Lot video link
+          </div>
+        </div>
+        <div class="video-caption">
+          <div class="label">AI on the Lot</div>
+          <p>AI on the Lot Opening Competition · 4 Days</p>
+        </div>
+      </div>
+
+      <div class="video-cell">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-btn"><svg width="14" height="16" viewBox="0 0 14 16"><path d="M0 0l14 8L0 16V0z"/></svg></div>
+            Add Build Your Wings video link
+          </div>
+        </div>
+        <div class="video-caption">
+          <div class="label">Build Your Wings</div>
+          <p>Soulscape 2026 · Top 5 · 48 Hours</p>
+        </div>
+      </div>
+
+      <div class="video-cell">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-btn"><svg width="14" height="16" viewBox="0 0 14 16"><path d="M0 0l14 8L0 16V0z"/></svg></div>
+            Add Eddie clip link
+          </div>
+        </div>
+        <div class="video-caption">
+          <div class="label">Eddie — Street Jesus</div>
+          <p>Add clip title here</p>
+        </div>
+      </div>
+
+      <div class="video-cell">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-btn"><svg width="14" height="16" viewBox="0 0 14 16"><path d="M0 0l14 8L0 16V0z"/></svg></div>
+            Add Catfucious clip link
+          </div>
+        </div>
+        <div class="video-caption">
+          <div class="label">Catfucious</div>
+          <p>Add clip title here</p>
+        </div>
+      </div>
+
+      <div class="video-cell">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-btn"><svg width="14" height="16" viewBox="0 0 14 16"><path d="M0 0l14 8L0 16V0z"/></svg></div>
+            Add additional clip
+          </div>
+        </div>
+        <div class="video-caption">
+          <div class="label">Additional Work</div>
+          <p>Add clip title here</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="label">The Stack</span>
+      <h2>Full Production Pipeline</h2>
+    </div>
+    <div class="stack-grid reveal">
+
+      <div class="stack-cell">
+        <div class="stack-category">Image Generation</div>
+        <ul class="stack-tools">
+          <li>Midjourney</li>
+          <li>Nano Banana Pro</li>
+          <li>OpenArt</li>
+          <li>Adobe Firefly</li>
+          <li>ChatGPT Image Tool</li>
+          <li>Seedream</li>
+        </ul>
+      </div>
+
+      <div class="stack-cell">
+        <div class="stack-category">Visual Identity & Consistency</div>
+        <ul class="stack-tools">
+          <li>Higgsfield Soul</li>
+          <li>Higgsfield Elements</li>
+          <li>HeyGen Avatar IV</li>
+          <li>Nano Banana Pro</li>
+          <li>Tap Now</li>
+        </ul>
+      </div>
+
+      <div class="stack-cell">
+        <div class="stack-category">Image-to-Video</div>
+        <ul class="stack-tools">
+          <li>Kling 3.0</li>
+          <li>Runway</li>
+          <li>Wan 2.6</li>
+          <li>Nano Banana</li>
+          <li>Tap Now</li>
+        </ul>
+      </div>
+
+      <div class="stack-cell">
+        <div class="stack-category">Voice & Audio</div>
+        <ul class="stack-tools">
+          <li>ElevenLabs</li>
+          <li>Suno</li>
+          <li>Adobe Firefly SFX</li>
+          <li>Aimi Sync</li>
+        </ul>
+      </div>
+
+      <div class="stack-cell">
+        <div class="stack-category">Editorial & Finish</div>
+        <ul class="stack-tools">
+          <li>Adobe Premiere Pro</li>
+          <li>After Effects</li>
+          <li>Topaz Video AI</li>
+          <li>CinePacks Master Bundle</li>
+        </ul>
+      </div>
+
+      <div class="stack-cell">
+        <div class="stack-category">Traditional Foundation</div>
+        <ul class="stack-tools">
+          <li>Storyboarding & beat sheets</li>
+          <li>Visual development</li>
+          <li>Photoshop</li>
+          <li>Maya (3D blockouts)</li>
+          <li>Colorscripts & style guides</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section id="approach">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="label">Philosophy</span>
+      <h2>How the Studio Works</h2>
+    </div>
+    <div class="approach-grid">
+
+      <div class="approach-block reveal">
+        <div class="approach-num">01</div>
+        <div class="approach-title">Story First. Always.</div>
+        <p class="approach-desc">Every project starts with a story — a moment, an emotion, a question worth asking. From there the work moves into traditional visual development: defining the scenes, breaking the beats, establishing the world before a single tool is opened.</p>
+      </div>
+
+      <div class="approach-block reveal">
+        <div class="approach-num">02</div>
+        <div class="approach-title">Identity Before Tools</div>
+        <p class="approach-desc">Every project goes through full visual development — expression sheets, orthographic drawings, color keys, personality documents. The AI tools scale what's already locked. They don't define it.</p>
+      </div>
+
+      <div class="approach-block reveal">
+        <div class="approach-num">03</div>
+        <div class="approach-title">Pipeline as Creative Infrastructure</div>
+        <p class="approach-desc">Each IP is built with a documented production system: reusable shot plates, defined camera language, consistent voice direction, and editorial templates. Sprint-based cycles from brief to published content.</p>
+      </div>
+
+      <div class="approach-block reveal">
+        <div class="approach-num">04</div>
+        <div class="approach-title">Consistency at Scale</div>
+        <p class="approach-desc">Visual identity must hold across every frame. Character sheets start traditionally — thumbnail sketches and drawings — then are finished with AI help and verified by hand for scale, placement, cloth, and proportion before becoming production assets. Locked at source, not fixed in post.</p>
+      </div>
+
+      <div class="approach-block reveal" style="grid-column: span 2;">
+        <div class="approach-num">05</div>
+        <div class="approach-title">Built to Teach</div>
+        <p class="approach-desc">Every production decision is documented. As faculty at ArtCenter College of Design, the studio's work directly informs how the next generation of artists learns to operate inside AI-native workflows — building systems that are rigorous, repeatable, and rooted in the craft principles that have always made animation worth watching.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="reveal">
+      <span class="label">Let's Talk</span>
+      <h2>Ready to <em>build</em><br>something new.</h2>
+      <p>Available for collaboration, studio roles, and speaking engagements at the intersection of traditional animation craft and generative AI production.</p>
+      <div class="cta-links">
+        <a href="mailto:youa21@yahoo.com" class="cta-primary">Get in Touch</a>
+        <a href="https://www.youavang.art" target="_blank" rel="noopener" class="cta-secondary">Traditional Portfolio →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Brain Jelly Labs</span>
+  <span>© 2026 Youa Vang · Los Angeles, CA</span>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
+</script>
+</body>
+</html>
