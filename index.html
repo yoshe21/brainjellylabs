@@ -20,15 +20,20 @@
     --dim:      #3A3A3A;
   }
   html { scroll-behavior: smooth; }
-  body { background: var(--black); color: var(--white); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
-  .display { font-family: 'Syne', sans-serif; font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; }
+  body { background: var(--black); color: var(--white); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; cursor: none; }
+  .cursor { width: 12px; height: 12px; background: var(--blue); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s ease, height 0.3s ease; mix-blend-mode: screen; }
+  .cursor-ring { width: 36px; height: 36px; border: 1px solid rgba(62,239,255,0.4); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: left 0.12s ease, top 0.12s ease, width 0.3s ease, height 0.3s ease; }
+  .cursor.hovering { width: 20px; height: 20px; }
+  .cursor-ring.hovering { width: 56px; height: 56px; border-color: rgba(62,239,255,0.7); }
+  a, button, iframe { cursor: none; }
   .label { font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); }
   .container { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
   section { padding: 6rem 0; }
   section + section { border-top: 1px solid var(--border); }
   #hero { padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
-  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 70% 40%, rgba(62,239,255,0.06) 0%, transparent 70%), radial-gradient(ellipse 40% 60% at 20% 80%, rgba(62,239,255,0.03) 0%, transparent 60%); pointer-events: none; }
-  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(62,239,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(62,239,255,0.04) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%); pointer-events: none; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 70% 40%, rgba(62,239,255,0.07) 0%, transparent 70%), radial-gradient(ellipse 40% 60% at 20% 80%, rgba(62,239,255,0.04) 0%, transparent 60%); pointer-events: none; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(62,239,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(62,239,255,0.04) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%); pointer-events: none; animation: gridpulse 8s ease-in-out infinite; }
+  @keyframes gridpulse { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
   .hero-content { position: relative; z-index: 2; padding: 0 2rem 5rem; max-width: 1080px; margin: 0 auto; width: 100%; }
   .hero-eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; }
   .hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--blue); }
@@ -39,56 +44,65 @@
   .hero-studio .labs-tag { font-size: clamp(2.4rem, 5.4vw, 6rem); font-weight: 700; color: var(--blue); letter-spacing: 0.05em; padding-bottom: 0.5rem; text-transform: uppercase; }
   .hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--mid); max-width: 560px; font-weight: 300; line-height: 1.7; margin-bottom: 3rem; }
   .hero-scroll { display: flex; align-items: center; gap: 1rem; color: var(--mid); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'Syne', sans-serif; }
-  .hero-scroll::after { content: ''; display: block; width: 4rem; height: 1px; background: var(--dim); }
+  .hero-scroll::after { content: ''; display: block; width: 4rem; height: 1px; background: var(--dim); animation: scrollline 2s ease-in-out infinite; }
+  @keyframes scrollline { 0%,100% { width:4rem; opacity:0.4; } 50% { width:6rem; opacity:1; } }
   #about .container { display: grid; grid-template-columns: 1fr 1.6fr; gap: 5rem; align-items: start; }
   .about-left h2 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; margin-top: 1rem; }
   .about-left h2 em { color: var(--blue); font-style: normal; }
   .about-right p { color: var(--mid); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem; }
   .about-right p strong { color: var(--white); font-weight: 500; }
   .credits-strip { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2.5rem; }
-  .credit-tag { font-size: 0.7rem; font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--border); padding: 0.3rem 0.75rem; color: var(--mid); }
+  .credit-tag { font-size: 0.7rem; font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--border); padding: 0.3rem 0.75rem; color: var(--mid); transition: border-color 0.2s, color 0.2s; }
+  .credit-tag:hover { border-color: var(--blue); color: var(--blue); }
   .section-head { margin-bottom: 3.5rem; }
   .section-head h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; margin-top: 0.75rem; }
   .comp-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(62,239,255,0.08); border: 1px solid rgba(62,239,255,0.25); padding: 0.3rem 0.75rem; font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin-bottom: 1rem; }
   .comp-badge::before { content: '◆'; font-size: 0.5rem; }
   .ip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-  .ip-card { background: var(--card); overflow: hidden; position: relative; display: flex; flex-direction: column; }
-  .ip-image { width: 100%; aspect-ratio: 16/9; background: var(--dim); position: relative; overflow: hidden; flex-shrink: 0; }
-  .ip-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-  .ip-card:hover .ip-image img { transform: scale(1.04); }
-  .ip-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; color: var(--dim); font-family: 'Syne', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; border: 2px dashed var(--border); background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(62,239,255,0.02) 10px, rgba(62,239,255,0.02) 20px); }
-  .ip-image-placeholder svg { width: 2rem; height: 2rem; opacity: 0.3; }
+  .ip-card { background: var(--card); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .ip-card::after { content: ''; position: absolute; inset: 0; border: 1px solid transparent; transition: border-color 0.3s; pointer-events: none; }
+  .ip-card:hover::after { border-color: rgba(62,239,255,0.2); }
+  .card-video { width: 100%; aspect-ratio: 16/9; background: #000; flex-shrink: 0; position: relative; overflow: hidden; }
+  .card-video iframe { width: 100%; height: 100%; border: 0; display: block; }
   .ip-body { padding: 2rem 2rem 2.5rem; flex: 1; display: flex; flex-direction: column; }
-  .ip-name { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin: 0.5rem 0 0.5rem; }
-  .ip-tagline { font-size: 0.9rem; color: var(--mid); line-height: 1.7; margin-bottom: 1.5rem; flex: 1; }
+  .ip-name { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0; }
+  .ip-tagline { font-size: 0.88rem; color: var(--mid); line-height: 1.75; margin-bottom: 1.5rem; flex: 1; }
+  .ip-card-wide { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; background: var(--card); gap: 2px; position: relative; }
+  .ip-card-wide::after { content: ''; position: absolute; inset: 0; border: 1px solid transparent; transition: border-color 0.3s; pointer-events: none; }
+  .ip-card-wide:hover::after { border-color: rgba(62,239,255,0.2); }
+  .ip-card-wide .card-video { aspect-ratio: unset; height: 100%; min-height: 280px; }
   .pipeline { border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: auto; }
   .pipeline-label { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue-dim); margin-bottom: 0.75rem; }
   .pipeline-steps { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
-  .step-tool { background: var(--dim); color: var(--white); padding: 0.2rem 0.5rem; font-size: 0.68rem; font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
+  .step-tool { background: var(--dim); color: var(--white); padding: 0.2rem 0.5rem; font-size: 0.68rem; font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; transition: background 0.2s; }
+  .step-tool:hover { background: var(--blue-dim); }
   .step-arrow { color: var(--border); font-size: 0.7rem; }
-  .ip-card-wide { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; background: var(--card); gap: 2px; }
-  .ip-card-wide .ip-image { aspect-ratio: unset; height: 100%; min-height: 260px; }
   .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .video-cell { background: var(--card); overflow: hidden; }
-  .video-frame { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; }
-  .video-frame iframe { width: 100%; height: 100%; border: 0; }
-  .video-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.75rem; color: var(--mid); font-family: 'Syne', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--dim); }
-  .play-btn { width: 3rem; height: 3rem; border: 2px solid var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-  .play-btn svg { fill: var(--blue); }
+  .video-cell { background: var(--card); overflow: hidden; transition: transform 0.3s ease; }
+  .video-cell:hover { transform: translateY(-3px); }
+  .video-frame { width: 100%; aspect-ratio: 16/9; background: #000; }
+  .video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
   .video-caption { padding: 1.25rem 1.5rem; }
   .video-caption .label { margin-bottom: 0.3rem; }
   .video-caption p { font-size: 0.82rem; color: var(--mid); }
   .stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .stack-cell { background: var(--card); padding: 2rem; position: relative; }
+  .stack-cell { background: var(--card); padding: 2rem; position: relative; overflow: hidden; }
   .stack-cell::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: var(--blue); transition: height 0.4s ease; }
   .stack-cell:hover::before { height: 100%; }
+  .stack-cell::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(62,239,255,0.04) 0%, transparent 70%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+  .stack-cell:hover::after { opacity: 1; }
   .stack-category { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue); margin-bottom: 1rem; }
   .stack-tools { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .stack-tools li { font-size: 0.88rem; color: var(--white); padding-left: 0.75rem; position: relative; }
+  .stack-tools li { font-size: 0.88rem; color: var(--white); padding-left: 0.75rem; position: relative; transition: color 0.2s, padding-left 0.2s; }
   .stack-tools li::before { content: '·'; position: absolute; left: 0; color: var(--blue-dim); }
+  .stack-tools li:hover { color: var(--blue); padding-left: 1rem; }
   .approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-  .approach-block { background: var(--card); padding: 2.5rem; }
-  .approach-num { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 1rem; }
+  .approach-block { background: var(--card); padding: 2.5rem; position: relative; overflow: hidden; transition: background 0.3s; }
+  .approach-block:hover { background: #1e1e1e; }
+  .approach-block::before { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--blue); transition: width 0.4s ease; }
+  .approach-block:hover::before { width: 100%; }
+  .approach-num { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; color: var(--border); line-height: 1; margin-bottom: 1rem; transition: color 0.3s; }
+  .approach-block:hover .approach-num { color: rgba(62,239,255,0.2); }
   .approach-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; }
   .approach-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.75; }
   #contact { text-align: center; }
@@ -96,17 +110,20 @@
   #contact h2 em { color: var(--blue); font-style: normal; }
   #contact p { color: var(--mid); max-width: 420px; margin: 0 auto 2.5rem; font-size: 1rem; line-height: 1.7; }
   .cta-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-  .cta-primary { background: var(--blue); color: #0D0D0D; padding: 0.9rem 2rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.2s; }
-  .cta-primary:hover { background: #7df7ff; transform: translateY(-2px); }
-  .cta-secondary { border: 1px solid var(--border); color: var(--white); padding: 0.9rem 2rem; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: inline-block; transition: border-color 0.2s, color 0.2s; }
-  .cta-secondary:hover { border-color: var(--blue); color: var(--blue); }
+  .cta-primary { background: var(--blue); color: #0D0D0D; padding: 0.9rem 2rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.2s, box-shadow 0.2s; }
+  .cta-primary:hover { background: #7df7ff; transform: translateY(-3px); box-shadow: 0 8px 30px rgba(62,239,255,0.3); }
+  .cta-secondary { border: 1px solid var(--border); color: var(--white); padding: 0.9rem 2rem; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: inline-block; transition: border-color 0.2s, color 0.2s, transform 0.2s; }
+  .cta-secondary:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-3px); }
   footer { border-top: 1px solid var(--border); padding: 2rem; display: flex; justify-content: space-between; align-items: center; max-width: 1080px; margin: 0 auto; font-size: 0.75rem; color: var(--mid); font-family: 'Syne', sans-serif; letter-spacing: 0.05em; }
-  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
   .reveal.visible { opacity: 1; transform: none; }
   @media (max-width: 768px) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
     #about .container { grid-template-columns: 1fr; gap: 2.5rem; }
     .ip-grid { grid-template-columns: 1fr; }
     .ip-card-wide { grid-column: span 1; grid-template-columns: 1fr; }
+    .ip-card-wide .card-video { min-height: 200px; }
     .stack-grid { grid-template-columns: 1fr 1fr; }
     .approach-grid { grid-template-columns: 1fr; }
     .video-grid { grid-template-columns: 1fr; }
@@ -114,11 +131,13 @@
     .hero-studio .line-brain, .hero-studio .line-jelly { font-size: clamp(4rem, 16vw, 8rem); }
   }
   @media (max-width: 480px) { .stack-grid { grid-template-columns: 1fr; } section { padding: 4rem 0; } }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .ip-card:hover .ip-image img { transform: none; } .stack-cell::before { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .cursor, .cursor-ring { display: none; } body { cursor: auto; } }
 </style>
 </head>
 <body>
- <section id="hero">
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<section id="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="hero-content">
@@ -170,16 +189,13 @@
     <div class="ip-grid">
 
       <div class="ip-card reveal">
-        <div class="ip-image">
-          <div class="ip-image-placeholder">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-            Drop Open still here
-          </div>
+        <div class="card-video">
+          <iframe src="https://www.youtube.com/embed/cu-MZedQd_k" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>
         <div class="ip-body">
           <div class="comp-badge">Gen Jam · Machine Cinema × OpenArt · 4 Days</div>
           <h3 class="ip-name">Open</h3>
-          <p class="ip-tagline">A complete short film — realism, stylized 2D, and mixed aesthetic woven into a single emotional arc. Built in four days for the Gen Jam competition hosted by Machine Cinema and OpenArt (theme: Open/Close). Festival-ready from brief to final cut without sacrificing visual coherence or story.</p>
+          <p class="ip-tagline">A complete short film — realism, stylized 2D, and mixed aesthetic woven into a single emotional arc. Built in four days for the Gen Jam competition. Festival-ready from brief to final cut.</p>
           <div class="pipeline">
             <div class="pipeline-label">Production Pipeline</div>
             <div class="pipeline-steps">
@@ -196,16 +212,13 @@
       </div>
 
       <div class="ip-card reveal">
-        <div class="ip-image">
-          <div class="ip-image-placeholder">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-            Drop AI on the Lot still here
-          </div>
+        <div class="card-video">
+          <iframe src="https://www.youtube.com/embed/B8ft4_QX2I8" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>
         <div class="ip-body">
           <div class="comp-badge">AI on the Lot Opening Competition · 4 Days</div>
           <h3 class="ip-name">AI on the Lot</h3>
-          <p class="ip-tagline">Cartoony CG aesthetic — a distinct visual world built entirely within a four-day competition window for the AI on the Lot opening competition. Demonstrates pipeline fluency in a completely different register from Open: bright, stylized, motion-forward.</p>
+          <p class="ip-tagline">Cartoony CG aesthetic — a distinct visual world built entirely within a four-day window. Bright, stylized, motion-forward. A completely different pipeline and register from Open.</p>
           <div class="pipeline">
             <div class="pipeline-label">Production Pipeline</div>
             <div class="pipeline-steps">
@@ -221,16 +234,13 @@
       </div>
 
       <div class="ip-card-wide reveal">
-        <div class="ip-image">
-          <div class="ip-image-placeholder">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-            Drop Build Your Wings still here
-          </div>
+        <div class="card-video">
+          <iframe src="https://www.youtube.com/embed/XOz9s_ng-6Q" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>
         <div class="ip-body" style="padding:2rem 2.5rem;">
           <div class="comp-badge">Soulscape 2026 · Top 5 · 48 Hours</div>
           <h3 class="ip-name">Build Your Wings</h3>
-          <p class="ip-tagline">Dark fantasy — a completely different emotional register from anything else in this collection. Built in 48 hours for Soulscape 2026 and placed in the top five. The constraint was absolute: concept, visuals, motion, audio, and edit in two days. The result is the most visually distinct piece in the studio's competition work — and the one that shows how far the pipeline can reach when pushed.</p>
+          <p class="ip-tagline">Dark fantasy — the most visually distinct piece in the studio's competition work. Built in 48 hours for Soulscape 2026, placing in the top five. Concept, visuals, motion, audio, and edit in two days. This one shows how far the pipeline can reach when pushed to its limit.</p>
           <div class="pipeline">
             <div class="pipeline-label">Production Pipeline</div>
             <div class="pipeline-steps">
@@ -261,11 +271,8 @@
     <div class="ip-grid">
 
       <div class="ip-card reveal">
-        <div class="ip-image">
-          <div class="ip-image-placeholder">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-            Drop Eddie image here
-          </div>
+        <div class="card-video">
+          <iframe src="https://www.youtube.com/embed/9cU78jJd2Q8" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>
         <div class="ip-body">
           <span class="label">Vertical Series · TikTok-First</span>
@@ -286,11 +293,8 @@
       </div>
 
       <div class="ip-card reveal">
-        <div class="ip-image">
-          <div class="ip-image-placeholder">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-            Drop Catfucious image here
-          </div>
+        <div class="card-video">
+          <iframe src="https://www.youtube.com/embed/CqQFNSIWn_E" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>
         <div class="ip-body">
           <span class="label">Teahouse Series · Short-Form Comedy</span>
@@ -320,67 +324,30 @@
       <h2>Watch the Work</h2>
     </div>
     <div class="video-grid reveal">
-
       <div class="video-cell">
-        <div class="video-frame">
-          <iframe src="https://www.youtube.com/embed/cu-MZedQd_k" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-        </div>
-        <div class="video-caption">
-          <div class="label">Open · Short Film</div>
-          <p>Gen Jam · Machine Cinema × OpenArt · 4 Days</p>
-        </div>
+        <div class="video-frame"><iframe src="https://www.youtube.com/embed/cu-MZedQd_k" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+        <div class="video-caption"><div class="label">Open · Short Film</div><p>Gen Jam · Machine Cinema × OpenArt · 4 Days</p></div>
       </div>
-
       <div class="video-cell">
-        <div class="video-frame">
-          <iframe src="https://www.youtube.com/embed/B8ft4_QX2I8" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-        </div>
-        <div class="video-caption">
-          <div class="label">AI on the Lot</div>
-          <p>AI on the Lot Opening Competition · 4 Days</p>
-        </div>
+        <div class="video-frame"><iframe src="https://www.youtube.com/embed/B8ft4_QX2I8" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+        <div class="video-caption"><div class="label">AI on the Lot</div><p>AI on the Lot Opening Competition · 4 Days</p></div>
       </div>
-
       <div class="video-cell">
-        <div class="video-frame">
-          <iframe src="https://www.youtube.com/embed/XOz9s_ng-6Q" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-        </div>
-        <div class="video-caption">
-          <div class="label">Build Your Wings</div>
-          <p>Soulscape 2026 · Top 5 · 48 Hours</p>
-        </div>
+        <div class="video-frame"><iframe src="https://www.youtube.com/embed/XOz9s_ng-6Q" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+        <div class="video-caption"><div class="label">Build Your Wings</div><p>Soulscape 2026 · Top 5 · 48 Hours</p></div>
       </div>
-
       <div class="video-cell">
-        <div class="video-frame">
-          <iframe src="https://www.youtube.com/embed/9cU78jJd2Q8" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-        </div>
-        <div class="video-caption">
-          <div class="label">Eddie — Street Jesus</div>
-          <p>Original IP · Vertical Series · In Production</p>
-        </div>
+        <div class="video-frame"><iframe src="https://www.youtube.com/embed/9cU78jJd2Q8" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+        <div class="video-caption"><div class="label">Eddie — Street Jesus</div><p>Original IP · Vertical Series · In Production</p></div>
       </div>
-
       <div class="video-cell">
-        <div class="video-frame">
-          <iframe src="https://www.youtube.com/embed/CqQFNSIWn_E" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-        </div>
-        <div class="video-caption">
-          <div class="label">Catfucious</div>
-          <p>Welcome to the Garden · Teahouse Series</p>
-        </div>
+        <div class="video-frame"><iframe src="https://www.youtube.com/embed/CqQFNSIWn_E" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+        <div class="video-caption"><div class="label">Catfucious</div><p>Welcome to the Garden · Teahouse Series</p></div>
       </div>
-
       <div class="video-cell">
-        <div class="video-frame">
-          <iframe src="https://www.youtube.com/embed/0xeeU9C1iiU" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-        </div>
-        <div class="video-caption">
-          <div class="label">Catfucious · First Insight</div>
-          <p>HeyGen Avatar · Character Test</p>
-        </div>
+        <div class="video-frame"><iframe src="https://www.youtube.com/embed/0xeeU9C1iiU" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+        <div class="video-caption"><div class="label">Catfucious · First Insight</div><p>HeyGen Avatar · Character Test</p></div>
       </div>
-
     </div>
   </div>
 </section>
@@ -392,7 +359,6 @@
       <h2>Full Production Pipeline</h2>
     </div>
     <div class="stack-grid reveal">
-
       <div class="stack-cell">
         <div class="stack-category">Image Generation</div>
         <ul class="stack-tools">
@@ -404,7 +370,6 @@
           <li>Seedream</li>
         </ul>
       </div>
-
       <div class="stack-cell">
         <div class="stack-category">Visual Identity & Consistency</div>
         <ul class="stack-tools">
@@ -415,7 +380,6 @@
           <li>Tap Now</li>
         </ul>
       </div>
-
       <div class="stack-cell">
         <div class="stack-category">Image-to-Video</div>
         <ul class="stack-tools">
@@ -426,7 +390,6 @@
           <li>Tap Now</li>
         </ul>
       </div>
-
       <div class="stack-cell">
         <div class="stack-category">Voice & Audio</div>
         <ul class="stack-tools">
@@ -436,7 +399,6 @@
           <li>Aimi Sync</li>
         </ul>
       </div>
-
       <div class="stack-cell">
         <div class="stack-category">Editorial & Finish</div>
         <ul class="stack-tools">
@@ -446,7 +408,6 @@
           <li>CinePacks Master Bundle</li>
         </ul>
       </div>
-
       <div class="stack-cell">
         <div class="stack-category">Traditional Foundation</div>
         <ul class="stack-tools">
@@ -457,7 +418,6 @@
           <li>Colorscripts & style guides</li>
         </ul>
       </div>
-
     </div>
   </div>
 </section>
@@ -468,37 +428,31 @@
       <h2>How the Studio Works</h2>
     </div>
     <div class="approach-grid">
-
       <div class="approach-block reveal">
         <div class="approach-num">01</div>
         <div class="approach-title">Story First. Always.</div>
         <p class="approach-desc">Every project starts with a story — a moment, an emotion, a question worth asking. From there the work moves into traditional visual development: defining the scenes, breaking the beats, establishing the world before a single tool is opened.</p>
       </div>
-
       <div class="approach-block reveal">
         <div class="approach-num">02</div>
         <div class="approach-title">Identity Before Tools</div>
         <p class="approach-desc">Every project goes through full visual development — expression sheets, orthographic drawings, color keys, personality documents. The AI tools scale what's already locked. They don't define it.</p>
       </div>
-
       <div class="approach-block reveal">
         <div class="approach-num">03</div>
         <div class="approach-title">Pipeline as Creative Infrastructure</div>
         <p class="approach-desc">Each IP is built with a documented production system: reusable shot plates, defined camera language, consistent voice direction, and editorial templates. Sprint-based cycles from brief to published content.</p>
       </div>
-
       <div class="approach-block reveal">
         <div class="approach-num">04</div>
         <div class="approach-title">Consistency at Scale</div>
-        <p class="approach-desc">Visual identity must hold across every frame. Character sheets start traditionally — thumbnail sketches and drawings — then are finished with AI help and verified by hand for scale, placement, cloth, and proportion before becoming production assets. Locked at source, not fixed in post.</p>
+        <p class="approach-desc">Visual identity must hold across every frame. Character sheets start traditionally — thumbnail sketches and drawings — then finished with AI help and verified by hand for scale, placement, cloth, and proportion before becoming production assets. Locked at source, not fixed in post.</p>
       </div>
-
       <div class="approach-block reveal" style="grid-column: span 2;">
         <div class="approach-num">05</div>
         <div class="approach-title">Built to Teach</div>
         <p class="approach-desc">Every production decision is documented. As faculty at ArtCenter College of Design, the studio's work directly informs how the next generation of artists learns to operate inside AI-native workflows — building systems that are rigorous, repeatable, and rooted in the craft principles that have always made animation worth watching.</p>
       </div>
-
     </div>
   </div>
 </section>
@@ -523,6 +477,30 @@
 </footer>
 
 <script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .ip-card, .ip-card-wide, .stack-cell, .approach-block, .video-cell').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); ring.classList.add('hovering'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovering'); ring.classList.remove('hovering'); });
+  });
+
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -533,7 +511,6 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   reveals.forEach(el => observer.observe(el));
-  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
 </script>
 </body>
 </html>
